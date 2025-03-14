@@ -1,8 +1,10 @@
 import { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route } from 'react-router-dom'; // HashRouter statt BrowserRouter
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
+
+import { AppProvider } from './context/AppContext';
 
 // Layout Components
 import Header from './components/layout/Header';
@@ -41,35 +43,37 @@ function App() {
   };
 
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <Router>
-        <Box sx={{ display: 'flex' }}>
-          <Header onMenuClick={handleDrawerToggle} />
-          <Sidebar 
-            mobileOpen={mobileOpen} 
-            onClose={handleDrawerToggle} 
-          />
-          <Box
-            component="main"
-            sx={{ 
-              flexGrow: 1, 
-              p: 3, 
-              width: { sm: `calc(100% - 240px)` },
-              mt: 8 
-            }}
-          >
-            <Routes>
-              <Route path="/" element={<Dashboard />} />
-              <Route path="/transactions" element={<Transactions />} />
-              <Route path="/budget" element={<Budget />} />
-              <Route path="/savings" element={<Savings />} />
-              <Route path="/reports" element={<Reports />} />
-            </Routes>
+    <AppProvider>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <Router>
+          <Box sx={{ display: 'flex' }}>
+            <Header onMenuClick={handleDrawerToggle} />
+            <Sidebar 
+              mobileOpen={mobileOpen} 
+              onClose={handleDrawerToggle} 
+            />
+            <Box
+              component="main"
+              sx={{ 
+                flexGrow: 1, 
+                p: 3, 
+                width: { sm: `calc(100% - 240px)` },
+                mt: 8 
+              }}
+            >
+              <Routes>
+                <Route path="/" element={<Dashboard />} />
+                <Route path="/transactions" element={<Transactions />} />
+                <Route path="/budget" element={<Budget />} />
+                <Route path="/savings" element={<Savings />} />
+                <Route path="/reports" element={<Reports />} />
+              </Routes>
+            </Box>
           </Box>
-        </Box>
-      </Router>
-    </ThemeProvider>
+        </Router>
+      </ThemeProvider>
+    </AppProvider>
   );
 }
 

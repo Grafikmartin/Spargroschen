@@ -12,6 +12,28 @@ import {
   Tab,
   Tabs
 } from '@mui/material';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  ArcElement,
+  Title,
+  Tooltip,
+  Legend
+} from 'chart.js';
+import { Bar, Pie } from 'react-chartjs-2';
+
+// Chart.js Komponenten registrieren
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  ArcElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 function Reports() {
   const { transactions } = useAppContext();
@@ -46,34 +68,92 @@ function Reports() {
       expensesByCategory[t.category] += t.amount;
     });
 
-  const handleChangeTab = (event, newValue) => {
-    setCurrentTab(newValue);
-  };
+  // Berechne Einnahmen pro Kategorie
+  const incomeByCategory = {};
+  transactions
+    .filter(t => t.type === 'income')
+    .forEach(t => {
+      if (!incomeByCategory[t.category]) {
+        incomeByCategory[t.category] = 0;
+      }
+      incomeByCategory[t.category] += t.amount;
+    });
 
-  const handleChangeTimeRange = (event) => {
-    setTimeRange(event.target.value);
-  };
-
-  return (
-    <Box>
-      <Typography variant="h4" gutterBottom>
-        Berichte
-      </Typography>
-      
-      <Paper sx={{ p: 2, mb: 3 }}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-          <Tabs value={currentTab} onChange={handleChangeTab}>
-            <Tab label="Übersicht" />
-            <Tab label="Ausgaben" />
-            <Tab label="Einnahmen" />
-          </Tabs>
-          
-          <FormControl size="small" sx={{ minWidth: 150 }}>
+    // Daten für das Übersichts-Diagramm (Einnahmen vs. Ausgaben)
+    const overviewChartData = {
+      labels: ['Einnahmen', 'Ausgaben'],
+      datasets: [
+        {
+          label: 'Beträge',
+          data: [totalIncome, totalExpenses],
+          backgroundColor: [
+            'rgba(75, 192, 192, 0.6)',  // Grün für Einnahmen
+            'rgba(255, 99, 132, 0.6)',   // Rot für Ausgaben
+          ],
+          borderColor: [
+            'rgba(75, 192, 192, 1)',
+            'rgba(255, 99, 132, 1)',
+          ],
+          borderWidth: 1,
+        },
+      ],
+    };
+  
+    // Daten für das Ausgaben-Kategorien-Diagramm
+    const expenseChartData = {
+      labels: Object.keys(expensesByCategory),
+      datasets: [
+        {
+          label: 'Ausgaben pro Kategorie',
+          data: Object.values(expensesByCategory),
+          backgroundColor: [
+            'rgba(255, 99, 132, 0.6)',
+            'rgba(54, 162, 235, 0.6)',
+            'rgba(255, 206, 86, 0.6)',
+            'rgba(75, 192, 192, 0.6)',
+            'rgba(153, 102, 255, 0.6)',
+            'rgba(255, 159, 64, 0.6)',
+          ],
+          borderColor: [
+            'rgba(255, 99, 132, 1)',
+            'rgba(54, 162, 235, 1)',
+            'rgba(255, 206, 86, 1)',
+            'rgba(75, 192, 192, 1)',
+            'rgba(153, 102, 255, 1)',
+            'rgba(255, 159, 64, 1)',
+          ],
+          borderWidth: 1,
+        },
+      ],
+    };
+  
+    const chartOptions = {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: 'top',
+        },
+        title: {
+          display: true,
+          text: 'Finanzübersicht',
+        },
+      },
+    };
+  
+    return (
+      <Box sx={{ p: 3 }}>
+        <Typography variant="h4" gutterBottom>
+          Finanzberichte
+        </Typography>
+  
+        <Box sx={{ mb: 3 }}>
+          <FormControl sx={{ minWidth: 200 }}>
             <InputLabel>Zeitraum</InputLabel>
             <Select
               value={timeRange}
               label="Zeitraum"
-              onChange={handleChangeTimeRange}
+              onChange={(e) => setTimeRange(e.target.value)}
             >
               <MenuItem value={1}>Letzter Monat</MenuItem>
               <MenuItem value={3}>Letzte 3 Monate</MenuItem>
@@ -82,81 +162,53 @@ function Reports() {
             </Select>
           </FormControl>
         </Box>
-        
-        {currentTab === 0 && (
-          <Grid container spacing={3}>
-            <Grid item xs={12} md={6}>
-              <Paper elevation={1} sx={{ p: 2 }}>
-                <Typography variant="h6" gutterBottom>Zusammenfassung</Typography>
-                <Box sx={{ my: 2 }}>
-                  <Typography variant="body1">
-                    Gesamteinnahmen: <strong style={{ color: 'green' }}>{formatCurrency(totalIncome)}</strong>
-                  </Typography>
-                  <Typography variant="body1">
-                    Gesamtausgaben: <strong style={{ color: 'red' }}>{formatCurrency(totalExpenses)}</strong>
-                  </Typography>
-                  <Typography variant="body1">
-                    Bilanz: <strong style={{ color: totalIncome - totalExpenses >= 0 ? 'green' : 'red' }}>
-                      {formatCurrency(totalIncome - totalExpenses)}
-                    </strong>
-                  </Typography>
-                </Box>
-              </Paper>
-            </Grid>
-            
-            <Grid item xs={12} md={6}>
-              <Paper elevation={1} sx={{ p: 2 }}>
-                <Typography variant="h6" gutterBottom>Top Ausgaben-Kategorien</Typography>
-                <Box sx={{ my: 2 }}>
-                  {Object.entries(expensesByCategory)
-                    .sort((a, b) => b[1] - a[1])
-                    .slice(0, 5)
-                    .map(([category, amount]) => (
-                      <Box key={category} sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-                        <Typography variant="body1">{category}</Typography>
-                        <Typography variant="body1" color="error">
-                          {formatCurrency(amount)}
-                        </Typography>
-                      </Box>
-                    ))}
-                </Box>
-              </Paper>
-            </Grid>
-            
+  
+        <Tabs
+          value={currentTab}
+          onChange={(e, newValue) => setCurrentTab(newValue)}
+          sx={{ mb: 3 }}
+        >
+          <Tab label="Übersicht" />
+          <Tab label="Ausgaben nach Kategorien" />
+        </Tabs>
+  
+        <Grid container spacing={3}>
+          {currentTab === 0 && (
             <Grid item xs={12}>
-              <Paper elevation={1} sx={{ p: 2, height: 300, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <Typography variant="body1" color="text.secondary">
-                  Hier würden Diagramme angezeigt werden (Chart.js)
-                </Typography>
+              <Paper sx={{ p: 3, height: 400 }}>
+                <Bar data={overviewChartData} options={chartOptions} />
               </Paper>
             </Grid>
+          )}
+  
+          {currentTab === 1 && (
+            <Grid item xs={12}>
+              <Paper sx={{ p: 3, height: 400 }}>
+                <Pie data={expenseChartData} options={chartOptions} />
+              </Paper>
+            </Grid>
+          )}
+  
+          <Grid item xs={12}>
+            <Paper sx={{ p: 3 }}>
+              <Typography variant="h6" gutterBottom>
+                Zusammenfassung
+              </Typography>
+              <Typography>
+                Gesamteinnahmen: {formatCurrency(totalIncome)}
+              </Typography>
+              <Typography>
+                Gesamtausgaben: {formatCurrency(totalExpenses)}
+              </Typography>
+              <Typography>
+                Bilanz: {formatCurrency(totalIncome - totalExpenses)}
+              </Typography>
+            </Paper>
           </Grid>
-        )}
-        
-        {currentTab === 1 && (
-          <Box>
-            <Typography variant="h6" gutterBottom>Ausgaben-Analyse</Typography>
-            <Paper elevation={1} sx={{ p: 2, height: 300, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Typography variant="body1" color="text.secondary">
-                Hier würde ein Ausgaben-Diagramm angezeigt werden
-              </Typography>
-            </Paper>
-          </Box>
-        )}
-        
-        {currentTab === 2 && (
-          <Box>
-            <Typography variant="h6" gutterBottom>Einnahmen-Analyse</Typography>
-            <Paper elevation={1} sx={{ p: 2, height: 300, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Typography variant="body1" color="text.secondary">
-                Hier würde ein Einnahmen-Diagramm angezeigt werden
-              </Typography>
-            </Paper>
-          </Box>
-        )}
-      </Paper>
-    </Box>
-  );
-}
-
-export default Reports;
+        </Grid>
+      </Box>
+    );
+  }
+  
+  export default Reports;
+  
