@@ -8,21 +8,25 @@ import AccountCircle from '@mui/icons-material/AccountCircle';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 import { useState } from 'react';
-import { useTheme } from '@mui/material/styles';
+import { useTheme as useMuiTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useAuth } from '../../context/AuthContext';
+import { useTheme } from '../../context/ThemeContext';
 import { useNavigate } from 'react-router-dom';
 import Chip from '@mui/material/Chip';
 import Box from '@mui/material/Box';
+import Brightness4Icon from '@mui/icons-material/Brightness4';
+import Brightness7Icon from '@mui/icons-material/Brightness7';
 
 // Importiere das Bild direkt
 import zasterZenLogo from '/ZasterZen.png';
 
 function Header({ onMenuClick }) {
   const [anchorEl, setAnchorEl] = useState(null);
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const muiTheme = useMuiTheme();
+  const isMobile = useMediaQuery(muiTheme.breakpoints.down('sm'));
   const { user, logout } = useAuth();
+  const { mode, toggleTheme } = useTheme();
   const navigate = useNavigate();
 
   const handleMenu = (event) => {
@@ -36,6 +40,11 @@ function Header({ onMenuClick }) {
   const handleLogout = () => {
     logout();
     navigate('/login');
+    setAnchorEl(null);
+  };
+
+  const handleSettings = () => {
+    navigate('/settings');
     setAnchorEl(null);
   };
 
@@ -54,7 +63,7 @@ function Header({ onMenuClick }) {
           </IconButton>
         )}
         
-        {/* Logo anstelle des Textes */}
+        {/* Logo */}
         <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center' }}>
           <img 
             src={zasterZenLogo} 
@@ -62,6 +71,16 @@ function Header({ onMenuClick }) {
             style={{ height: '24px' }}
           />
         </Box>
+        
+        {/* Theme-Toggle-Button */}
+        <IconButton 
+          color="inherit" 
+          onClick={toggleTheme} 
+          sx={{ mr: 1 }}
+          aria-label={mode === 'dark' ? 'Zum hellen Modus wechseln' : 'Zum dunklen Modus wechseln'}
+        >
+          {mode === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
+        </IconButton>
         
         {user && (
           <Chip
@@ -75,7 +94,7 @@ function Header({ onMenuClick }) {
         <div>
           <IconButton
             size="large"
-            aria-label="account of current user"
+            aria-label="Benutzerkonto"
             aria-controls="menu-appbar"
             aria-haspopup="true"
             onClick={handleMenu}
@@ -98,7 +117,7 @@ function Header({ onMenuClick }) {
             open={Boolean(anchorEl)}
             onClose={handleClose}
           >
-            <MenuItem onClick={handleClose}>Einstellungen</MenuItem>
+            <MenuItem onClick={handleSettings}>Einstellungen</MenuItem>
             <MenuItem onClick={handleLogout}>Abmelden</MenuItem>
           </Menu>
         </div>

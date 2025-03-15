@@ -15,6 +15,7 @@ import BarChartIcon from '@mui/icons-material/BarChart';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
+import SettingsIcon from '@mui/icons-material/Settings';
 
 const drawerWidth = 240;
 
@@ -30,6 +31,11 @@ function Sidebar({ mobileOpen, onClose }) {
     { text: 'Budget', icon: <AccountBalanceWalletIcon />, path: '/budget' },
     { text: 'Sparziele', icon: <SavingsIcon />, path: '/savings' },
     { text: 'Berichte', icon: <BarChartIcon />, path: '/reports' },
+    {
+      text: 'Einstellungen',
+      icon: <SettingsIcon />,
+      path: '/settings'
+    }
   ];
 
   const handleNavigation = (path) => {

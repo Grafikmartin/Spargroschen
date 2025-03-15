@@ -1,12 +1,11 @@
 // src/App.jsx
 import { useState, useEffect } from 'react';
 import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
 
 import { AppProvider } from './context/AppContext';
 import { AuthProvider } from './context/AuthContext';
+import { ThemeProvider } from './context/ThemeContext'; // Neuer Import
 import PrivateRoute from './components/PrivateRoute';
 
 // Layout Components
@@ -21,24 +20,7 @@ import Transactions from './pages/Transactions';
 import Budget from './pages/Budget';
 import Savings from './pages/Savings';
 import Reports from './pages/Reports';
-
-// Theme
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: '#203847',
-    },
-    secondary: {
-      main: '#78A6A3',
-    },
-    background: {
-      default: '#78A6A3',
-    },
-  },
-  typography: {
-    fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
-  },
-});
+import Settings from './pages/Settings'; // Neue Seite
 
 function App() {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -54,9 +36,8 @@ function App() {
 
   return (
     <AuthProvider>
-      <AppProvider>
-        <ThemeProvider theme={theme}>
-          <CssBaseline />
+      <ThemeProvider> {/* Neuer Provider */}
+        <AppProvider>
           <Router>
             <Routes>
               <Route path="/login" element={<Login />} />
@@ -86,6 +67,7 @@ function App() {
                           <Route path="/budget" element={<Budget />} />
                           <Route path="/savings" element={<Savings />} />
                           <Route path="/reports" element={<Reports />} />
+                          <Route path="/settings" element={<Settings />} /> {/* Neue Route */}
                           <Route path="*" element={<Navigate to="/" />} />
                         </Routes>
                       </Box>
@@ -95,8 +77,8 @@ function App() {
               />
             </Routes>
           </Router>
-        </ThemeProvider>
-      </AppProvider>
+        </AppProvider>
+      </ThemeProvider>
     </AuthProvider>
   );
 }

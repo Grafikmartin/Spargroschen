@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "https://grafikmartin.github.io/spargroschen",
+  "homepage": "https://grafikmartin.github.io/ZasterZen",
   "scripts": {
     "dev": "vite",
     "build": "vite build",

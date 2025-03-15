@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
-  base: '/zasterzen/',
+  base: '/ZasterZen/', // Achte auf die Groß-/Kleinschreibung!
   server: {
     hmr: {
       overlay: false

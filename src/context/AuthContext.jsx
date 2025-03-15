@@ -67,6 +67,45 @@ export const AuthProvider = ({ children }) => {
     return true;
   };
 
+  // Neue Funktionen für Einstellungen
+  const changeUsername = (currentUsername, newUsername, password) => {
+    // Überprüfe, ob der neue Benutzername bereits vergeben ist
+    if (users.some(u => u.username === newUsername)) {
+      return { success: false, message: 'Benutzername bereits vergeben' };
+    }
+
+    // Überprüfe, ob das Passwort korrekt ist
+    const userIndex = users.findIndex(u => u.username === currentUsername);
+    if (userIndex === -1 || users[userIndex].password !== password) {
+      return { success: false, message: 'Falsches Passwort' };
+    }
+
+    // Aktualisiere den Benutzernamen
+    const updatedUsers = [...users];
+    updatedUsers[userIndex].username = newUsername;
+    setUsers(updatedUsers);
+
+    // Aktualisiere den aktuellen Benutzer
+    setUser({ ...user, username: newUsername });
+
+    return { success: true, message: 'Benutzername erfolgreich geändert' };
+  };
+
+  const changePassword = (username, currentPassword, newPassword) => {
+    // Überprüfe, ob das aktuelle Passwort korrekt ist
+    const userIndex = users.findIndex(u => u.username === username);
+    if (userIndex === -1 || users[userIndex].password !== currentPassword) {
+      return { success: false, message: 'Aktuelles Passwort ist falsch' };
+    }
+
+    // Aktualisiere das Passwort
+    const updatedUsers = [...users];
+    updatedUsers[userIndex].password = newPassword;
+    setUsers(updatedUsers);
+
+    return { success: true, message: 'Passwort erfolgreich geändert' };
+  };
+
   return (
     <AuthContext.Provider value={{ 
       isAuthenticated, 
@@ -74,7 +113,9 @@ export const AuthProvider = ({ children }) => {
       login, 
       logout, 
       register,
-      loginAsGuest
+      loginAsGuest,
+      changeUsername,
+      changePassword
     }}>
       {children}
     </AuthContext.Provider>
