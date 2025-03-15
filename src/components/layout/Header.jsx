@@ -1,3 +1,4 @@
+// src/components/layout/Header.jsx
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
@@ -9,17 +10,28 @@ import Menu from '@mui/material/Menu';
 import { useState } from 'react';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
+import { useAuth } from '../../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
+import Chip from '@mui/material/Chip';
 
 function Header({ onMenuClick }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
 
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
   };
 
   const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
     setAnchorEl(null);
   };
 
@@ -40,6 +52,16 @@ function Header({ onMenuClick }) {
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
           GeldPlaner
         </Typography>
+        
+        {user && (
+          <Chip
+            label={user.isGuest ? "Gast" : user.username}
+            color={user.isGuest ? "default" : "primary"}
+            variant="outlined"
+            sx={{ mr: 2, color: 'white', borderColor: 'white' }}
+          />
+        )}
+        
         <div>
           <IconButton
             size="large"
@@ -67,7 +89,7 @@ function Header({ onMenuClick }) {
             onClose={handleClose}
           >
             <MenuItem onClick={handleClose}>Einstellungen</MenuItem>
-            <MenuItem onClick={handleClose}>Abmelden</MenuItem>
+            <MenuItem onClick={handleLogout}>Abmelden</MenuItem>
           </Menu>
         </div>
       </Toolbar>
