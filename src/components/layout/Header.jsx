@@ -13,6 +13,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import Chip from '@mui/material/Chip';
+import Box from '@mui/material/Box';
 
 function Header({ onMenuClick }) {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -49,9 +50,15 @@ function Header({ onMenuClick }) {
             <MenuIcon />
           </IconButton>
         )}
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-          GeldPlaner
-        </Typography>
+        
+        {/* Logo anstelle des Textes */}
+        <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center' }}>
+          <img 
+            src={`${process.env.PUBLIC_URL}/ZasterZen.png`} 
+            alt="ZasterZen" 
+            style={{ height: '40px' }}
+          />
+        </Box>
         
         {user && (
           <Chip

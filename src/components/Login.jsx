@@ -1,5 +1,5 @@
 // src/components/Login.jsx
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { 
@@ -25,7 +25,7 @@ function Login() {
   const location = useLocation();
 
   // Prüfe, ob eine Erfolgsmeldung von der Registrierung übergeben wurde
-  useState(() => {
+  useEffect(() => {
     if (location.state?.message) {
       setSuccessMessage(location.state.message);
     }
@@ -67,9 +67,15 @@ function Login() {
         py: 4
       }}>
         <Paper sx={{ p: 4, width: '100%' }}>
-          <Typography variant="h5" gutterBottom align="center">
-            Spargroschen
-          </Typography>
+          {/* Logo anstelle des Textes */}
+          <Box sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}>
+            <img 
+              src={`${process.env.PUBLIC_URL}/ZasterZen.png`} 
+              alt="ZasterZen" 
+              style={{ height: '80px' }}
+            />
+          </Box>
+          
           <Typography variant="subtitle1" gutterBottom align="center" sx={{ mb: 3 }}>
             Bitte melde dich an
           </Typography>
