@@ -13,6 +13,9 @@ import {
   Divider
 } from '@mui/material';
 
+// Importiere das Bild direkt
+import zasterZenLogo from '/ZasterZen-203847.png';
+
 function Login() {
   const [credentials, setCredentials] = useState({
     username: '',
@@ -67,9 +70,15 @@ function Login() {
         py: 4
       }}>
         <Paper sx={{ p: 4, width: '100%' }}>
-          <Typography variant="h5" gutterBottom align="center">
-            ZasterZen
-          </Typography>
+          {/* Logo anstelle des Textes */}
+          <Box sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}>
+            <img 
+              src={zasterZenLogo} 
+              alt="ZasterZen" 
+              style={{ height: '40px' }}
+            />
+          </Box>
+          
           <Typography variant="subtitle1" gutterBottom align="center" sx={{ mb: 3 }}>
             Bitte melde dich an
           </Typography>

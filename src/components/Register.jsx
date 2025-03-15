@@ -12,6 +12,9 @@ import {
   Container
 } from '@mui/material';
 
+// Importiere das Bild direkt
+import zasterZenLogo from '/ZasterZen-203847.png';
+
 function Register() {
   const [formData, setFormData] = useState({
     username: '',
@@ -58,9 +61,14 @@ function Register() {
         py: 4
       }}>
         <Paper sx={{ p: 4, width: '100%' }}>
-          <Typography variant="h5" gutterBottom align="center">
-            ZasterZen
-          </Typography>
+          {/* Logo anstelle des Textes */}
+          <Box sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}>
+            <img 
+              src={zasterZenLogo} 
+              alt="ZasterZen" 
+              style={{ height: '40px' }}
+            />
+          </Box>
           
           <Typography variant="h6" gutterBottom align="center">
             Registrieren

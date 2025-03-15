@@ -15,6 +15,9 @@ import { useNavigate } from 'react-router-dom';
 import Chip from '@mui/material/Chip';
 import Box from '@mui/material/Box';
 
+// Importiere das Bild direkt
+import zasterZenLogo from '/ZasterZen.png';
+
 function Header({ onMenuClick }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const theme = useTheme();
@@ -53,9 +56,11 @@ function Header({ onMenuClick }) {
         
         {/* Logo anstelle des Textes */}
         <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center' }}>
-          <Typography variant="h6" component="div">
-            ZasterZen
-          </Typography>
+          <img 
+            src={zasterZenLogo} 
+            alt="ZasterZen" 
+            style={{ height: '24px' }}
+          />
         </Box>
         
         {user && (

@@ -26,13 +26,13 @@ import Reports from './pages/Reports';
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#3f51b5',
+      main: '#203847',
     },
     secondary: {
-      main: '#f50057',
+      main: '#78A6A3',
     },
     background: {
-      default: '#f5f5f5',
+      default: '#78A6A3',
     },
   },
   typography: {
