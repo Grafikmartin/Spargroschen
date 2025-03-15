@@ -67,15 +67,9 @@ function Login() {
         py: 4
       }}>
         <Paper sx={{ p: 4, width: '100%' }}>
-          {/* Logo anstelle des Textes */}
-          <Box sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}>
-            <img 
-              src={`${process.env.PUBLIC_URL}/ZasterZen.png`} 
-              alt="ZasterZen" 
-              style={{ height: '80px' }}
-            />
-          </Box>
-          
+          <Typography variant="h5" gutterBottom align="center">
+            ZasterZen
+          </Typography>
           <Typography variant="subtitle1" gutterBottom align="center" sx={{ mb: 3 }}>
             Bitte melde dich an
           </Typography>

@@ -53,11 +53,9 @@ function Header({ onMenuClick }) {
         
         {/* Logo anstelle des Textes */}
         <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center' }}>
-          <img 
-            src={`${process.env.PUBLIC_URL}/ZasterZen.png`} 
-            alt="ZasterZen" 
-            style={{ height: '40px' }}
-          />
+          <Typography variant="h6" component="div">
+            ZasterZen
+          </Typography>
         </Box>
         
         {user && (

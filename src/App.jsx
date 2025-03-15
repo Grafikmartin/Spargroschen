@@ -1,10 +1,9 @@
 // src/App.jsx
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
-import { useState, useEffect } from 'react';
 
 import { AppProvider } from './context/AppContext';
 import { AuthProvider } from './context/AuthContext';
@@ -41,13 +40,13 @@ const theme = createTheme({
   },
 });
 
-
-useEffect(() => {
-  document.title = 'ZasterZen';
-}, []);
-
 function App() {
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  // Setze den Dokumententitel
+  useEffect(() => {
+    document.title = 'ZasterZen';
+  }, []);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
