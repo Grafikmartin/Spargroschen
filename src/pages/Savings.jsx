@@ -1,3 +1,4 @@
+// src/pages/Savings.jsx
 import { useState } from 'react';
 import { useAppContext } from '../context/AppContext';
 import { 
@@ -16,7 +17,8 @@ import {
   Card,
   CardContent,
   CardActions,
-  InputAdornment
+  InputAdornment,
+  Container
 } from '@mui/material';
 import { Add as AddIcon, Edit as EditIcon, Delete as DeleteIcon } from '@mui/icons-material';
 import { format, differenceInDays } from 'date-fns';
@@ -126,163 +128,243 @@ function Savings() {
     labels: Array.isArray(savingsGoals) ? savingsGoals.map(goal => goal.name) : [],
     datasets: [
       {
-        label:  'Gespart',
-        data: Array.isArray(savingsGoals) ? savingsGoals.map(goal => goal.targetAmount - goal.currentAmount) : [],
-            backgroundColor: [
-              'rgba(75, 192, 192, 0.2)',
-              'rgba(54, 162, 235, 0.2)',
-              'rgba(255, 206, 86, 0.2)',
-              'rgba(255, 99, 132, 0.2)',
-              'rgba(153, 102, 255, 0.2)',
-            ],
-            borderColor: [
-              'rgba(75, 192, 192, 1)',
-              'rgba(54, 162, 235, 1)',
-              'rgba(255, 206, 86, 1)',
-              'rgba(255, 99, 132, 1)',
-              'rgba(153, 102, 255, 1)',
-            ],
-            borderWidth: 1,
-          }
-        ]
-      };
-    
-      return (
-        <Box sx={{ p: 3 }}>
-          <Typography variant="h4" gutterBottom>
-            Sparziele
-          </Typography>
-          
-          <Grid container spacing={3}>
-            {/* Diagramm */}
-            <Grid item xs={12} md={6}>
-              <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column', height: 400 }}>
+        label: 'Gespart',
+        data: Array.isArray(savingsGoals) ? savingsGoals.map(goal => goal.currentAmount) : [],
+        backgroundColor: [
+          'rgba(75, 192, 192, 0.6)',
+          'rgba(54, 162, 235, 0.6)',
+          'rgba(255, 206, 86, 0.6)',
+          'rgba(255, 99, 132, 0.6)',
+          'rgba(153, 102, 255, 0.6)',
+        ],
+        borderColor: [
+          'rgba(75, 192, 192, 1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(255, 99, 132, 1)',
+          'rgba(153, 102, 255, 1)',
+        ],
+        borderWidth: 1,
+      }
+    ],
+  };
+
+  return (
+    <Container maxWidth="lg">
+      <Box sx={{ mb: 4 }}>
+        <Typography variant="h4" gutterBottom>
+          Sparziele
+        </Typography>
+        <Typography variant="body1" color="text.secondary">
+          Verfolge deine Sparziele und behalte den Überblick über deinen Fortschritt.
+        </Typography>
+      </Box>
+
+      <Box sx={{ mb: 4, display: 'flex', justifyContent: 'flex-end' }}>
+        <Button
+          variant="contained"
+          startIcon={<AddIcon />}
+          onClick={handleOpen}
+        >
+          Neues Sparziel
+        </Button>
+      </Box>
+
+      <Grid container spacing={3}>
+        {Array.isArray(savingsGoals) && savingsGoals.map((goal) => {
+          const progress = (goal.currentAmount / goal.targetAmount) * 100;
+          const remaining = goal.targetAmount - goal.currentAmount;
+          const monthlySavings = calculateMonthlySavings(goal);
+
+          return (
+            <Grid item xs={12} md={6} key={goal.id}>
+              <Paper sx={{ p: 3, position: 'relative' }}>
+                <Box sx={{ position: 'absolute', top: 16, right: 16 }}>
+                  <IconButton size="small" onClick={() => handleEdit(goal)}>
+                    <EditIcon fontSize="small" />
+                  </IconButton>
+                  <IconButton size="small" onClick={() => handleDelete(goal.id)}>
+                    <DeleteIcon fontSize="small" />
+                  </IconButton>
+                </Box>
+
                 <Typography variant="h6" gutterBottom>
-                  Sparziele Übersicht
+                  {goal.name}
                 </Typography>
-                <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <Doughnut data={savingsChartData} />
+
+                <Box sx={{ mt: 2, mb: 1 }}>
+                  <LinearProgress 
+                    variant="determinate" 
+                    value={Math.min(progress, 100)} 
+                    sx={{ 
+                      height: 10, 
+                      borderRadius: 5,
+                      '& .MuiLinearProgress-bar': {
+                        backgroundColor: progress >= 100 ? 'success.main' : 'primary.main',
+                      }
+                    }}
+                  />
                 </Box>
-              </Paper>
-            </Grid>
-    
-            {/* Liste der Sparziele */}
-            <Grid item xs={12} md={6}>
-              <Paper sx={{ p: 2 }}>
-                <Box sx={{ mb: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <Typography variant="h6">
-                    Meine Sparziele
+
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+                  <Typography variant="body2" color="text.secondary">
+                    {formatCurrency(goal.currentAmount)} von {formatCurrency(goal.targetAmount)}
                   </Typography>
-                  <Button
-                    variant="contained"
-                    startIcon={<AddIcon />}
-                    onClick={handleOpen}
-                  >
-                    Neues Sparziel
-                  </Button>
+                  <Typography variant="body2" color="text.secondary">
+                    {Math.min(Math.round(progress), 100)}%
+                  </Typography>
                 </Box>
-    
+
                 <Grid container spacing={2}>
-                  {Array.isArray(savingsGoals) && savingsGoals.map((goal) => (
-                    <Grid item xs={12} key={goal.id}>
-                      <Card>
-                        <CardContent>
-                          <Typography variant="h6" gutterBottom>
-                            {goal.name}
-                          </Typography>
-                          <LinearProgress
-                            variant="determinate"
-                            value={(goal.currentAmount / goal.targetAmount) * 100}
-                            sx={{ mb: 1, height: 10, borderRadius: 5 }}
-                          />
-                          <Typography color="text.secondary" gutterBottom>
-                            {formatCurrency(goal.currentAmount)} von {formatCurrency(goal.targetAmount)}
-                          </Typography>
-                          <Typography color="text.secondary">
-                            Ziel bis: {formatDate(goal.deadline)}
-                          </Typography>
-                          <Typography color="text.secondary">
-                            Monatlich benötigt: {formatCurrency(calculateMonthlySavings(goal))}
-                          </Typography>
-                        </CardContent>
-                        <CardActions>
-                          <IconButton onClick={() => handleEdit(goal)}>
-                            <EditIcon />
-                          </IconButton>
-                          <IconButton onClick={() => handleDelete(goal.id)}>
-                            <DeleteIcon />
-                          </IconButton>
-                        </CardActions>
-                      </Card>
-                    </Grid>
-                  ))}
+                  <Grid item xs={6}>
+                    <Typography variant="body2" color="text.secondary">
+                      Noch benötigt:
+                    </Typography>
+                    <Typography variant="body1">
+                      {formatCurrency(Math.max(remaining, 0))}
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={6}>
+                    <Typography variant="body2" color="text.secondary">
+                      Zieldatum:
+                    </Typography>
+                    <Typography variant="body1">
+                      {formatDate(goal.deadline)}
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Typography variant="body2" color="text.secondary">
+                      Monatlich sparen:
+                    </Typography>
+                    <Typography variant="body1">
+                      {formatCurrency(monthlySavings)}
+                    </Typography>
+                  </Grid>
                 </Grid>
               </Paper>
             </Grid>
+          );
+        })}
+
+        {Array.isArray(savingsGoals) && savingsGoals.length > 0 && (
+          <Grid item xs={12} md={6}>
+            <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column', height: 450 }}>
+              <Typography variant="h6" gutterBottom>
+                Sparziele Übersicht
+              </Typography>
+              <Box sx={{ 
+                flexGrow: 1, 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center',
+                position: 'relative',
+                height: '100%'
+              }}>
+                <Doughnut 
+                  data={savingsChartData} 
+                  options={{
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                      legend: {
+                        position: 'bottom',
+                      }
+                    }
+                  }}
+                />
+              </Box>
+            </Paper>
           </Grid>
-    
-          {/* Dialog für neues/bearbeiten Sparziel */}
-          <Dialog open={open} onClose={handleClose}>
-            <DialogTitle>
-              {editingGoal ? 'Sparziel bearbeiten' : 'Neues Sparziel'}
-            </DialogTitle>
-            <DialogContent>
-              <TextField
-                autoFocus
-                margin="dense"
-                name="name"
-                label="Bezeichnung"
-                type="text"
-                fullWidth
-                value={formData.name}
-                onChange={handleChange}
-              />
-              <TextField
-                margin="dense"
-                name="targetAmount"
-                label="Zielbetrag"
-                type="number"
-                fullWidth
-                value={formData.targetAmount}
-                onChange={handleChange}
-                InputProps={{
-                  startAdornment: <InputAdornment position="start">€</InputAdornment>,
-                }}
-              />
-              <TextField
-                margin="dense"
-                name="currentAmount"
-                label="Bereits gespart"
-                type="number"
-                fullWidth
-                value={formData.currentAmount}
-                onChange={handleChange}
-                InputProps={{
-                  startAdornment: <InputAdornment position="start">€</InputAdornment>,
-                }}
-              />
-              <TextField
-                margin="dense"
-                name="deadline"
-                label="Zieldatum"
-                type="date"
-                fullWidth
-                value={formData.deadline}
-                onChange={handleChange}
-                InputLabelProps={{
-                  shrink: true,
-                }}
-              />
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={handleClose}>Abbrechen</Button>
-              <Button onClick={handleSubmit} variant="contained">
-                {editingGoal ? 'Aktualisieren' : 'Hinzufügen'}
+        )}
+
+        {(!Array.isArray(savingsGoals) || savingsGoals.length === 0) && (
+          <Grid item xs={12}>
+            <Paper sx={{ p: 3, textAlign: 'center' }}>
+              <Typography variant="h6" gutterBottom>
+                Keine Sparziele vorhanden
+              </Typography>
+              <Typography variant="body1" color="text.secondary" paragraph>
+                Du hast noch keine Sparziele erstellt. Klicke auf "Neues Sparziel", um zu beginnen.
+              </Typography>
+              <Button
+                variant="contained"
+                startIcon={<AddIcon />}
+                onClick={handleOpen}
+              >
+                Neues Sparziel
               </Button>
-            </DialogActions>
-          </Dialog>
-        </Box>
-      );
-    }
-    
-    export default Savings;
+            </Paper>
+          </Grid>
+        )}
+      </Grid>
+
+      <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
+        <DialogTitle>{editingGoal ? 'Sparziel bearbeiten' : 'Neues Sparziel'}</DialogTitle>
+        <DialogContent>
+          <TextField
+            autoFocus
+            margin="dense"
+            name="name"
+            label="Name des Sparziels"
+            type="text"
+            fullWidth
+            variant="outlined"
+            value={formData.name}
+            onChange={handleChange}
+            sx={{ mb: 2 }}
+          />
+          <TextField
+            margin="dense"
+            name="targetAmount"
+            label="Zielbetrag"
+            type="number"
+            fullWidth
+            variant="outlined"
+            value={formData.targetAmount}
+            onChange={handleChange}
+            InputProps={{
+              startAdornment: <InputAdornment position="start">€</InputAdornment>,
+            }}
+            sx={{ mb: 2 }}
+          />
+          <TextField
+            margin="dense"
+            name="currentAmount"
+            label="Aktueller Betrag"
+            type="number"
+            fullWidth
+            variant="outlined"
+            value={formData.currentAmount}
+            onChange={handleChange}
+            InputProps={{
+              startAdornment: <InputAdornment position="start">€</InputAdornment>,
+            }}
+            sx={{ mb: 2 }}
+          />
+          <TextField
+            margin="dense"
+            name="deadline"
+            label="Zieldatum"
+            type="date"
+            fullWidth
+            variant="outlined"
+            value={formData.deadline}
+            onChange={handleChange}
+            InputLabelProps={{
+              shrink: true,
+            }}
+            sx={{ mb: 2 }}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Abbrechen</Button>
+          <Button onClick={handleSubmit} variant="contained">
+            {editingGoal ? 'Aktualisieren' : 'Hinzufügen'}
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </Container>
+  );
+}
+
+export default Savings;

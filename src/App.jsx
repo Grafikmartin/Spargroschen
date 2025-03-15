@@ -2,10 +2,11 @@
 import { useState, useEffect } from 'react';
 import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Box from '@mui/material/Box';
+import CssBaseline from '@mui/material/CssBaseline';
 
 import { AppProvider } from './context/AppContext';
 import { AuthProvider } from './context/AuthContext';
-import { ThemeProvider } from './context/ThemeContext'; // Neuer Import
+import { ThemeProvider } from './context/ThemeContext'; // Importiere den ThemeProvider
 import PrivateRoute from './components/PrivateRoute';
 
 // Layout Components
@@ -20,7 +21,8 @@ import Transactions from './pages/Transactions';
 import Budget from './pages/Budget';
 import Savings from './pages/Savings';
 import Reports from './pages/Reports';
-import Settings from './pages/Settings'; // Neue Seite
+import Settings from './pages/Settings';
+import Help from './pages/Help';
 
 function App() {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -36,9 +38,10 @@ function App() {
 
   return (
     <AuthProvider>
-      <ThemeProvider> {/* Neuer Provider */}
+      <ThemeProvider> {/* Verwende den ThemeProvider */}
         <AppProvider>
           <Router>
+            <CssBaseline />
             <Routes>
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
@@ -67,7 +70,8 @@ function App() {
                           <Route path="/budget" element={<Budget />} />
                           <Route path="/savings" element={<Savings />} />
                           <Route path="/reports" element={<Reports />} />
-                          <Route path="/settings" element={<Settings />} /> {/* Neue Route */}
+                          <Route path="/settings" element={<Settings />} />
+                          <Route path="/help" element={<Help />} />
                           <Route path="*" element={<Navigate to="/" />} />
                         </Routes>
                       </Box>

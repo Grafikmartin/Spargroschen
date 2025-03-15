@@ -5,6 +5,7 @@ import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircle from '@mui/icons-material/AccountCircle';
+import HelpIcon from '@mui/icons-material/Help';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 import { useState } from 'react';
@@ -12,7 +13,7 @@ import { useTheme as useMuiTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import Chip from '@mui/material/Chip';
 import Box from '@mui/material/Box';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
@@ -48,6 +49,12 @@ function Header({ onMenuClick }) {
     setAnchorEl(null);
   };
 
+  // Diese Funktion muss direkt zur Hilfeseite navigieren
+  const handleHelp = () => {
+    console.log("Navigiere zur Hilfeseite"); // Debug-Ausgabe
+    navigate('/help'); // Stelle sicher, dass dies korrekt ist
+  };
+
   return (
     <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
       <Toolbar>
@@ -71,6 +78,17 @@ function Header({ onMenuClick }) {
             style={{ height: '24px' }}
           />
         </Box>
+        
+        {/* Hilfe-Button - Verwende Link statt onClick für direktere Navigation */}
+        <IconButton 
+          color="inherit" 
+          component={Link}
+          to="/help"
+          sx={{ mr: 1 }}
+          aria-label="Hilfe"
+        >
+          <HelpIcon />
+        </IconButton>
         
         {/* Theme-Toggle-Button */}
         <IconButton 
