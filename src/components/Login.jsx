@@ -1,6 +1,6 @@
 // src/components/Login.jsx
 import { useState, useEffect } from 'react';
-import { useNavigate, Link, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { 
   TextField, 
@@ -57,6 +57,10 @@ function Login() {
   const handleGuestLogin = () => {
     loginAsGuest();
     navigate('/');
+  };
+
+  const handleRegisterClick = () => {
+    navigate('/register');
   };
 
   return (
@@ -124,11 +128,21 @@ function Login() {
               Anmelden
             </Button>
             
-            <Box sx={{ mt: 2, textAlign: 'center' }}>
-              <Link to="/register" style={{ textDecoration: 'none' }}>
-                Noch kein Konto? Registrieren
-              </Link>
-            </Box>
+            {/* Neuer Button statt Link */}
+            <Button 
+              fullWidth 
+              variant="contained" 
+              onClick={handleRegisterClick}
+              sx={{ 
+                mt: 2,
+                backgroundColor: '#78a6a3',
+                '&:hover': {
+                  backgroundColor: '#5d8a87',
+                }
+              }}
+            >
+              Noch kein Konto? Registrieren
+            </Button>
             
             <Divider sx={{ my: 3 }}>oder</Divider>
             

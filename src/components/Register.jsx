@@ -1,6 +1,6 @@
 // src/components/Register.jsx
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { 
   TextField, 
@@ -9,8 +9,12 @@ import {
   Paper, 
   Typography, 
   Alert,
-  Container
+  Container,
+  IconButton,
+  AppBar,
+  Toolbar
 } from '@mui/material';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 // Importiere das Bild direkt
 import zasterZenLogo from '/ZasterZen-203847.png';
@@ -50,83 +54,119 @@ function Register() {
     }
   };
 
+  const handleBack = () => {
+    navigate('/login');
+  };
+
+  const handleLoginClick = () => {
+    navigate('/login');
+  };
+
   return (
-    <Container maxWidth="sm">
-      <Box sx={{ 
-        display: 'flex', 
-        flexDirection: 'column',
-        justifyContent: 'center', 
-        alignItems: 'center', 
-        minHeight: '100vh',
-        py: 4
-      }}>
-        <Paper sx={{ p: 4, width: '100%' }}>
-          {/* Logo anstelle des Textes */}
-          <Box sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}>
-            <img 
-              src={zasterZenLogo} 
-              alt="ZasterZen" 
-              style={{ height: '40px' }}
-            />
-          </Box>
-          
-          <Typography variant="h6" gutterBottom align="center">
+    <>
+      {/* AppBar mit Zurück-Button */}
+      <AppBar position="fixed" color="default" elevation={1}>
+        <Toolbar>
+          <IconButton
+            edge="start"
+            color="inherit"
+            onClick={handleBack}
+            aria-label="zurück"
+          >
+            <ArrowBackIcon />
+          </IconButton>
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1, textAlign: 'center' }}>
             Registrieren
           </Typography>
-          
-          {error && (
-            <Alert severity="error" sx={{ mb: 2 }}>
-              {error}
-            </Alert>
-          )}
-          
-          <form onSubmit={handleSubmit}>
-            <TextField
-              fullWidth
-              label="Benutzername"
-              name="username"
-              margin="normal"
-              value={formData.username}
-              onChange={handleChange}
-              required
-            />
-            <TextField
-              fullWidth
-              label="Passwort"
-              name="password"
-              type="password"
-              margin="normal"
-              value={formData.password}
-              onChange={handleChange}
-              required
-            />
-            <TextField
-              fullWidth
-              label="Passwort bestätigen"
-              name="confirmPassword"
-              type="password"
-              margin="normal"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              required
-            />
-            <Button 
-              fullWidth 
-              variant="contained" 
-              type="submit" 
-              sx={{ mt: 3 }}
-            >
-              Registrieren
-            </Button>
-            <Box sx={{ mt: 2, textAlign: 'center' }}>
-              <Link to="/login" style={{ textDecoration: 'none' }}>
-                Bereits registriert? Anmelden
-              </Link>
+          <Box sx={{ width: 48 }} /> {/* Platzhalter für Ausrichtung */}
+        </Toolbar>
+      </AppBar>
+
+      <Container maxWidth="sm">
+        <Box sx={{ 
+          display: 'flex', 
+          flexDirection: 'column',
+          justifyContent: 'center', 
+          alignItems: 'center', 
+          minHeight: '100vh',
+          py: 4,
+          mt: 6 // Abstand für die AppBar
+        }}>
+          <Paper sx={{ p: 4, width: '100%' }}>
+            {/* Logo */}
+            <Box sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}>
+              <img 
+                src={zasterZenLogo} 
+                alt="ZasterZen" 
+                style={{ height: '40px' }}
+              />
             </Box>
-          </form>
-        </Paper>
-      </Box>
-    </Container>
+            
+            {error && (
+              <Alert severity="error" sx={{ mb: 2 }}>
+                {error}
+              </Alert>
+            )}
+            
+            <form onSubmit={handleSubmit}>
+              <TextField
+                fullWidth
+                label="Benutzername"
+                name="username"
+                margin="normal"
+                value={formData.username}
+                onChange={handleChange}
+                required
+              />
+              <TextField
+                fullWidth
+                label="Passwort"
+                name="password"
+                type="password"
+                margin="normal"
+                value={formData.password}
+                onChange={handleChange}
+                required
+              />
+              <TextField
+                fullWidth
+                label="Passwort bestätigen"
+                name="confirmPassword"
+                type="password"
+                margin="normal"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                required
+              />
+              <Button 
+                fullWidth 
+                variant="contained" 
+                type="submit" 
+                sx={{ mt: 3 }}
+              >
+                Registrieren
+              </Button>
+              
+              {/* Neuer Button statt Link */}
+              <Button 
+                fullWidth 
+                variant="contained" 
+                onClick={handleLoginClick}
+                sx={{ 
+                  mt: 2,
+                  backgroundColor: '#78a6a3',
+                  '&:hover': {
+                    backgroundColor: '#5d8a87',
+                  }
+                }}
+              >
+                Bereits registriert? Anmelden
+              </Button>
+            </form>
+          </Paper>
+        </Box>
+      </Container>
+    </>
   );
 }
 
